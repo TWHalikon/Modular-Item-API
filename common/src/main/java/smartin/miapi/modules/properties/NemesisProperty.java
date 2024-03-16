@@ -46,15 +46,18 @@ public class NemesisProperty extends DoubleProperty implements CraftingProperty 
                 if (nemesisScale != null && nemesisScale > 0) {
                     String entityType = compound.getString("miapi_nemesis_target");
                     int value = compound.getInt("miapi_nemesis");
+                    int value = compound.getInt("miapi_nemesis_negative");
                     EntityType attackedType = livingEntity.getType();
                     Optional<EntityType<?>> entityType1 = EntityType.get(entityType);
                     if (entityType1.isPresent()) {
                         EntityType targetType = entityType1.get();
                         if (attackedType.equals(targetType)) {
+                            compound.putInt("miapi_nemesis_negative", 1);
                             compound.putInt("miapi_nemesis", value + 1);
                         } else {
                             //other type
-                            value = value - 5;
+                            compound.putInt("miapi_nemesis", value-(Math.pow(2, "miapi_nemesis_negative".value)));
+                            compound.putInt("miapi_nemesis_negative", value + 1);
                             if (value < 0) {
                                 compound.remove("miapi_nemesis_target");
                                 compound.putInt("miapi_nemesis", 0);
